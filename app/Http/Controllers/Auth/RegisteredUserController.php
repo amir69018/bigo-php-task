@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -37,16 +38,21 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'social_link' => ['required', 'string', 'max:255'],
+            'social_link' => ['required', 'url', 'max:100'],
             'cover_letter' => ['string', 'max:500'],
+            'resume' => ['required', 'mimes:pdf', 'max:10000'],
         ]);
-
+        $resume = $request->file('resume');
+        // Saving the file in the resumes folder
+        $resume_path = $request->file('resume')->store('resumes');
+        //dd($request);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'social_link' => $request->social_link,
+            'social_url' => $request->social_link,
             'cover_letter' => $request->cover_letter,
-            //'resume_path' => $request->resume,
+            'resume_path' => $resume_path,
+            'application_status' => 'Pending_review',
             'password' => Hash::make($request->password),
         ]);
 
@@ -54,6 +60,9 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        $request->session()->forget('user_id', $user->id);
+
+        //return redirect(RouteServiceProvider::HOME);
+        return View('dashboard');
     }
 }

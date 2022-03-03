@@ -11,10 +11,12 @@ This is a test task for BIGO
 ### Applicant Side
 1. Customizing the applicant registration controller to save the resume along with the other information
 2. Display of the applicat's application status on the dashboard
+3. Ability to update the cover letter while the application is in pending review status
 ### Hiring Manager Side
 1. Seeding the Hiring Manager user in the database
 2. Display the list of all the applicants with the pending review status
-3. Ability to change the status of the user from pending review to any other. 
+3. Display the complete profile of an applicant
+4. Ability to change the status of the user from pending review to any other. 
 
 
 # Installation and using this project on your local machine
